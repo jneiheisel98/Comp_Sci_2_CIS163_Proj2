@@ -1,0 +1,173 @@
+Messages and/or updates
+
+COMPLETED CLASSES/FILES
+ScreenDisplay.java
+
+COMPLETED STEPS (step # and who completed)
+STEP 2 Default constructor for rental completed by all 3 of us
+STEP 3 Completed: Gage
+STEP 4: Completed: Gage
+ON TO THE TASKS
+
+2/18/21
+Went over work that needs to be done as a group
+Told Jacob he had a nice beard
+Finished rental class
+Girlfriend brought me BURGER
+Get handle on streams, lambdas, and the code in general.
+
+2/19/21
+Finished Step 3 & 4
+
+3/5/21
+Finished task 2, loading from text
+
+3/10/21
+tinker space:
+for within week
+filteredListRentals = (ArrayList<Rental>) listOfRentals.stream()
+                        .filter(rental -> daysBetween(rental.getRentedOn(), rental.getDueBack())<=7)
+                        .collect(Collectors.toList());
+for within week games first:
+ filteredListRentals = (ArrayList<Rental>) listOfRentals.stream()
+                        .filter(r -> daysBetween(r.getRentedOn(), r.getDueBack())<=7)
+                        .sorted(new GameConsoleSorter())
+                        .sorted(new GameConsoleAlphabetizer())
+                        .collect(Collectors.toList());
+
+ Game Console Sorter:
+ public class GameConsoleSorter implements Comparator<Rental> {
+     @Override
+ public int compare(Rental r1, Rental r2) {
+         return r1.getClass().getName().compareTo(r2.getClass().getName())*-1;
+
+     }
+ }
+ Game Console Alphabetizer:
+public class GameConsoleAlphabetizer implements Comparator<Rental> {
+    @Override
+    public int compare(Rental r1, Rental r2){
+        int comparer = 2;
+        if(r1 instanceof Game && r2 instanceof Game){
+            comparer =  r1.getNameOfRenter().toLowerCase().compareTo(r2.getNameOfRenter().toLowerCase());
+
+        }
+        else if(r1 instanceof Console && r2 instanceof Console){
+            comparer =  r1.getNameOfRenter().toLowerCase().compareTo(r2.getNameOfRenter().toLowerCase());
+
+        }
+        return comparer;
+    }
+}
+
+- night of 3/11, more to do with making sure code from night before worked, issue with sorting by 1 week overdue
+also needed to see about sorting names and games/consoles as well.
+
+3/12/2021
+-Ultimately, we had to see about the days being different and then providing more clarity on what needs to go where
+for dates
+- Started error check for the null names of a renter in the database. DONE
+
+3/16/2021
+-Did error check for due date before rental date in both game and console (in listModel in all cases)
+-TODO check leniency of gregorian calendar to prevent invalid dates (null, letters, invalid dates) DONE
+-TODO check if game name is null? DONE
+-TODO check date on when something is returned to make sure it's valid DONE
+-TODO Write 3 JUnits ALMOST DONE
+
+
+Step 4 tinkerspace:
+   in top variables
+   private String[] columnNamesLateRentals = {"Renter\'s Name", "Rented On Date",
+            "Due Date", "Number of Days Late", "Console", "Name of Game"};
+
+            in update screen:
+             case LateRentals:
+             try{
+                            filteredListRentals = (ArrayList<Rental>) listOfRentals.stream()
+                                    .filter(r -> daysBetween(r.getDueBack(), new GregorianCalendar())>0)
+                                    .collect(Collectors.toList());
+                            Collections.sort(filteredListRentals, new Comparator<Rental>() {
+                                        @Override
+                                        public int compare(Rental r1, Rental r2) {
+                                            return r1.getClass().getName().compareTo(r2.getClass().getName())*-1;
+
+                                        }
+                                    });
+                            Collections.sort(filteredListRentals, new Comparator<Rental>() {
+                                @Override
+                                public int compare(Rental n1, Rental n2) {
+                                    Integer rental1 = (daysBetween(n1.getDueBack(), new GregorianCalendar()));
+                                    Integer rental2 = (daysBetween(n2.getDueBack(), new GregorianCalendar()));
+                                    int comparer = 0;
+                                    if (n1 instanceof Game && n2 instanceof Game) {
+                                        if(rental1.compareTo(rental2)!=0) {
+                                            comparer = rental1.compareTo(rental2);
+                                        }
+                                        else{
+                                            comparer = n1.getNameOfRenter().compareTo(n2.getNameOfRenter());
+                                        }
+
+                                    } else if (n1 instanceof Console && n2 instanceof Console) {
+                                        if(rental1.compareTo(rental2)!=0) {
+                                            comparer = rental1.compareTo(rental2);
+                                        }
+                                        else{
+                                            comparer = n1.getNameOfRenter().compareTo(n2.getNameOfRenter());
+                                        }
+
+                                    }
+                                    return comparer;
+                                }
+                            });
+            }
+            catch(StringIndexOutOfBoundsException e){
+                                             JOptionPane.showMessageDialog(null,"Enter a Name");
+                                             listOfRentals.remove(listOfRentals.size()-1);
+            }
+
+                            break;
+
+update getColumnName, getColumnCount, getValueAt,
+
+private Object lateRentalScreen(int row, int col) {
+        switch (col) {
+            case 0:
+                return (filteredListRentals.get(row).nameOfRenter);
+
+            case 1:
+                return (formatter.format(filteredListRentals.get(row)
+                        .rentedOn.
+                                getTime()));
+            case 2:
+                return (formatter.format(filteredListRentals.get(row)
+                        .dueBack.
+                                getTime()));
+            case 3:
+               return daysBetween(filteredListRentals.get(row).getDueBack(), new GregorianCalendar());
+
+
+
+            case 4:
+                if (filteredListRentals.get(row) instanceof Console)
+                    return (((Console) filteredListRentals.get(row)).getConsoleType());
+                else {
+                    if (filteredListRentals.get(row) instanceof Game)
+                        if (((Game) filteredListRentals.get(row)).getConsole() != null)
+                            return ((Game) filteredListRentals.get(row)).getConsole();
+                        else
+                            return "";
+                }
+            case 5:
+                if (filteredListRentals.get(row) instanceof Game)
+                    return (((Game) filteredListRentals.get(row)).getNameGame());
+                else
+                    return "";
+
+            default:
+                throw new RuntimeException("Row,col out of range: " + row + " " + col);
+        }
+    }
+
+    default with letters in first parameter, stopping constructor from adding object (
+    Errors unhandled: wrong dates in the return, errors made: whenever error on rented on, default constructor is called
